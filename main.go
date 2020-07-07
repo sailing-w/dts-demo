@@ -2,45 +2,42 @@ package main
 
 import (
 	"bytes"
+	//this is package you build in local space
+	"dts_subscribe/dtsavro"
 	"fmt"
-	"github.com/sanity-io/litter"
+	"github.com/Shopify/sarama"
+	"github.com/actgardner/gogen-avro/v7/compiler"
+	"github.com/actgardner/gogen-avro/v7/vm"
+	cluster "github.com/bsm/sarama-cluster"
 	"io"
 	"os"
 	"os/signal"
 	"time"
-
-	"github.com/Shopify/sarama"
-	cluster "github.com/bsm/sarama-cluster"
-)
-
-var (
-	r io.Reader
-
-	// 仅需改动以下配置即可
-	// ***********************************************************
-	kafkaUser       = "data_brigde_sync"
-	kafkaPassWord   = "Medlinker123"
-	kafkaTopic      = "topic"
-	kafkaGroupId    = "groupid"
-	kafkaBrokerList = []string{"localhost:9020"}
-	// ***********************************************************
 )
 
 func main() {
+
+	var (
+		r         io.Reader
+		brokerURL = []string{"dts-cn-hangzhou.aliyuncs.com:18001"}
+		topicName = []string{"cn_hangzhou_rm_bp10op9pb0qqvs36o_rdsdt_dtsacct"}
+		groupID   = "dtsosqy72ife7ilb9a"
+		userName  = "DataSync8"
+		password  = "Medlinker123"
+	)
 	config := cluster.NewConfig()
 	config.Consumer.Return.Errors = true
 	config.Group.Return.Notifications = true
 	config.Net.MaxOpenRequests = 100
 	config.Consumer.Offsets.CommitInterval = 1 * time.Second
+	//config.Consumer.Offsets.Initial = sarama.OffsetNewest
 	config.Consumer.Offsets.Initial = sarama.OffsetOldest
 	config.Net.SASL.Enable = true
-	config.Net.SASL.User = fmt.Sprintf("%s-%s",
-		"data_brigde_sync", "dtsb2tf52en28mlbel")
-	config.Net.SASL.Password = "Medlinker123"
+	config.Net.SASL.User = fmt.Sprintf("%s-%s", userName, groupID)
+	config.Net.SASL.Password = password
 	config.Version = sarama.V0_11_0_0
 
-	consumer, err := cluster.NewConsumer([]string{"dts-cn-hangzhou.aliyuncs.com:18001"},
-		"dtsb2tf52en28mlbel", []string{"cn_hangzhou_i_bp1ijo6mcpzxkvr3h0in_3306_meddev"}, config)
+	consumer, err := cluster.NewConsumer(brokerURL, groupID, topicName, config)
 	if err != nil {
 		panic(err)
 	}
@@ -59,42 +56,40 @@ func main() {
 	// consume notifications
 	go func() {
 		for ntf := range consumer.Notifications() {
-			fmt.Println("Rebalanced: ", litter.Sdump(ntf))
+			fmt.Println("Rebalanced: %+v\n", ntf)
 		}
 	}()
 
+	// Pre compile schema of avro
+	t := dtsavro.NewRecord()
+	deser, err := compiler.CompileSchemaBytes([]byte(t.Schema()), []byte(t.Schema()))
+	if err != nil {
+		panic(err)
+	}
 	// consume messages, watch signals
 	for {
 		select {
 		case msg, ok := <-consumer.Messages():
 			if ok {
+				fmt.Fprintf(os.Stdout, "%s/%d/%d\t%s\t\n", msg.Topic, msg.Partition, msg.Offset, msg.Key)
 				r = bytes.NewReader(msg.Value)
-				fmt.Printf("key: %s, value: %s\n", string(msg.Key), string(msg.Value))
+				t = dtsavro.NewRecord()
+				if err = vm.Eval(r, deser, t); err != nil {
+					panic(err)
+				}
+				if t != nil {
+					if t.ObjectName != nil {
+						fmt.Println(t.Operation, t.ObjectName.String, t.Tags)
+					}
 
-				//record, err := avro.DeserializeRecord(r)
-				//if err != nil {
-				//	log.Fatal("avro.DeserializeRecord is err: ", err)
-				//}
-				//if record.Operation == avro.OperationUPDATE {
-				//	fmt.Println(litter.Sdump(record.Tags))
-				//}
-				//t := avro.NewRecord()
-				//codec, err := goavro.NewCodec(t.Schema())
-				//if err != nil {
-				//	log.Fatal(err)
-				//}
-				//native, _, err := codec.NativeFromBinary(msg.Value)
-				//if err != nil {
-				//	log.Fatal("codec.NativeFromBinary error:", err)
-				//}
-				////fmt.Println("native:", native)
-				//
-				//_, err = codec.TextualFromNative(nil, native)
-				//if err != nil {
-				//	log.Fatal("codec.TextualFromNative: ", err)
-				//}
-				////fmt.Println("texual:", string(texual))
-
+					if t.Fields != nil {
+						if t.Fields.ArrayField != nil {
+							for _, j := range t.Fields.ArrayField {
+								fmt.Println(j.Name, j.DataTypeNumber)
+							}
+						}
+					}
+				}
 			}
 		case <-signals:
 			return
