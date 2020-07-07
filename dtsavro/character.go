@@ -15,10 +15,10 @@ import (
 type Character struct {
 	Charset string `json:"charset"`
 
-	Value []byte `json:"value"`
+	Value string `json:"value"`
 }
 
-const CharacterAvroCRC64Fingerprint = "\xc1a\xeb\xfb\x9e\x97\\\xe7"
+const CharacterAvroCRC64Fingerprint = "Zj\xe82K\x06F\xdf"
 
 func NewCharacter() *Character {
 	return &Character{}
@@ -59,7 +59,7 @@ func writeCharacter(r *Character, w io.Writer) error {
 	if err != nil {
 		return err
 	}
-	err = vm.WriteBytes(r.Value, w)
+	err = vm.WriteString(r.Value, w)
 	if err != nil {
 		return err
 	}
@@ -71,7 +71,7 @@ func (r *Character) Serialize(w io.Writer) error {
 }
 
 func (r *Character) Schema() string {
-	return "{\"fields\":[{\"name\":\"charset\",\"type\":\"string\"},{\"name\":\"value\",\"type\":\"bytes\"}],\"name\":\"com.alibaba.dts.formats.avro.Character\",\"type\":\"record\"}"
+	return "{\"fields\":[{\"name\":\"charset\",\"type\":\"string\"},{\"name\":\"value\",\"type\":\"string\"}],\"name\":\"com.alibaba.dts.formats.avro.Character\",\"type\":\"record\"}"
 }
 
 func (r *Character) SchemaName() string {
@@ -92,7 +92,7 @@ func (r *Character) Get(i int) types.Field {
 	case 0:
 		return &types.String{Target: &r.Charset}
 	case 1:
-		return &types.Bytes{Target: &r.Value}
+		return &types.String{Target: &r.Value}
 	}
 	panic("Unknown field index")
 }

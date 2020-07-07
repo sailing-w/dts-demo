@@ -16,6 +16,12 @@ import (
 )
 
 func main() {
+	t := dtsavro.NewRecord()
+	deser, err := compiler.CompileSchemaBytes([]byte(t.Schema()), []byte(t.Schema()))
+	if err != nil {
+		panic(err)
+	}
+	return
 
 	var (
 		r         io.Reader
@@ -61,8 +67,8 @@ func main() {
 	}()
 
 	// Pre compile schema of avro
-	t := dtsavro.NewRecord()
-	deser, err := compiler.CompileSchemaBytes([]byte(t.Schema()), []byte(t.Schema()))
+	t = dtsavro.NewRecord()
+	deser, err = compiler.CompileSchemaBytes([]byte(t.Schema()), []byte(t.Schema()))
 	if err != nil {
 		panic(err)
 	}

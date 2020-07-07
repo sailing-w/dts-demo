@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../dts_subscribe/.idea/dts_subscribe.iml" filepath="$PROJECT_DIR$/../dts_subscribe/.idea/dts_subscribe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/dts-demo.iml" filepath="$PROJECT_DIR$/.idea/dts-demo.iml" />
     </modules>
   </component>
 </project>

@@ -163,36 +163,6 @@
   {
     "namespace": "com.alibaba.dts.formats.avro",
     "type": "record",
-    "name": "TimestampWithTimeZone",
-    "fields": [
-      {
-        "name": "value",
-        "type": "DateTime"
-      },
-      {
-        "name": "timezone",
-        "type": "string"
-      }
-    ]
-  },
-  {
-    "namespace": "com.alibaba.dts.formats.avro",
-    "type": "record",
-    "name": "BinaryGeometry",
-    "fields": [
-      {
-        "name": "type",
-        "type": "string"
-      },
-      {
-        "name": "value",
-        "type": "bytes"
-      }
-    ]
-  },
-  {
-    "namespace": "com.alibaba.dts.formats.avro",
-    "type": "record",
     "name": "TextGeometry",
     "fields": [
       {
@@ -234,12 +204,6 @@
         "type": "string"
       }
     ]
-  },
-  {
-      "namespace": "com.alibaba.dts.formats.avro",
-      "type": "enum",
-      "name": "EmptyObject",
-      "symbols" : ["NULL", "NONE"]
   },
   {
     "namespace": "com.alibaba.dts.formats.avro",
@@ -388,53 +352,45 @@
       {
         "name": "beforeImages",
         "default": null,
-        "type": [
-          "null",
-          "string",
-          {
-            "type": "array",
-            "items": [
-              "null",
-              "com.alibaba.dts.formats.avro.Integer",
-              "com.alibaba.dts.formats.avro.Character",
-              "com.alibaba.dts.formats.avro.Decimal",
-              "com.alibaba.dts.formats.avro.Float",
-              "com.alibaba.dts.formats.avro.Timestamp",
-              "com.alibaba.dts.formats.avro.DateTime",
-              "com.alibaba.dts.formats.avro.TimestampWithTimeZone",
-              "com.alibaba.dts.formats.avro.BinaryGeometry",
-              "com.alibaba.dts.formats.avro.TextGeometry",
-              "com.alibaba.dts.formats.avro.BinaryObject",
-              "com.alibaba.dts.formats.avro.TextObject",
-              "com.alibaba.dts.formats.avro.EmptyObject"
-            ]
-          }
+        "type":[
+            "null",
+            {
+                "type": "array",
+                "items": [
+                  "null",
+                  "com.alibaba.dts.formats.avro.Integer",
+                  "com.alibaba.dts.formats.avro.Character",
+                  "com.alibaba.dts.formats.avro.Decimal",
+                  "com.alibaba.dts.formats.avro.Float",
+                  "com.alibaba.dts.formats.avro.Timestamp",
+                  "com.alibaba.dts.formats.avro.DateTime",
+                  "com.alibaba.dts.formats.avro.TextGeometry",
+                  "com.alibaba.dts.formats.avro.BinaryObject",
+                  "com.alibaba.dts.formats.avro.TextObject"
+                ]
+            }
         ]
       },
       {
         "name": "afterImages",
         "default": null,
-        "type": [
-          "null",
-          "string",
-          {
-            "type": "array",
-            "items": [
-              "null",
-              "com.alibaba.dts.formats.avro.Integer",
-              "com.alibaba.dts.formats.avro.Character",
-              "com.alibaba.dts.formats.avro.Decimal",
-              "com.alibaba.dts.formats.avro.Float",
-              "com.alibaba.dts.formats.avro.Timestamp",
-              "com.alibaba.dts.formats.avro.DateTime",
-              "com.alibaba.dts.formats.avro.TimestampWithTimeZone",
-              "com.alibaba.dts.formats.avro.BinaryGeometry",
-              "com.alibaba.dts.formats.avro.TextGeometry",
-              "com.alibaba.dts.formats.avro.BinaryObject",
-              "com.alibaba.dts.formats.avro.TextObject",
-              "com.alibaba.dts.formats.avro.EmptyObject"
-            ]
-          }
+        "type":[
+            "null",
+            {
+                "type": "array",
+                "items": [
+                  "null",
+                  "com.alibaba.dts.formats.avro.Integer",
+                  "com.alibaba.dts.formats.avro.Character",
+                  "com.alibaba.dts.formats.avro.Decimal",
+                  "com.alibaba.dts.formats.avro.Float",
+                  "com.alibaba.dts.formats.avro.Timestamp",
+                  "com.alibaba.dts.formats.avro.DateTime",
+                  "com.alibaba.dts.formats.avro.TextGeometry",
+                  "com.alibaba.dts.formats.avro.BinaryObject",
+                  "com.alibaba.dts.formats.avro.TextObject"
+                ]
+            }
         ]
       },
       {
