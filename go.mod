@@ -1,4 +1,4 @@
-module dts_subscribe
+module dts-demo
 
 go 1.14
 
@@ -11,5 +11,6 @@ require (
 	github.com/onsi/ginkgo v1.14.0 // indirect
 	github.com/pierrec/lz4 v2.5.2+incompatible // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 // indirect
+	github.com/sanity-io/litter v1.2.0
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
 )

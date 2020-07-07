@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	//this is package you build in local space
-	"dts_subscribe/dtsavro"
+	"dts-demo/dtsavro"
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/actgardner/gogen-avro/v7/compiler"
@@ -78,17 +78,7 @@ func main() {
 					panic(err)
 				}
 				if t != nil {
-					if t.ObjectName != nil {
-						fmt.Println(t.Operation, t.ObjectName.String, t.Tags)
-					}
-
-					if t.Fields != nil {
-						if t.Fields.ArrayField != nil {
-							for _, j := range t.Fields.ArrayField {
-								fmt.Println(j.Name, j.DataTypeNumber)
-							}
-						}
-					}
+					//fmt.Println("----record: ",litter.Sdump(t))
 				}
 			}
 		case <-signals:
